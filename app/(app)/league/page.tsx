@@ -36,7 +36,8 @@ export default function LeagueDetailPage({ params }: { params: Promise<{ id: str
       const { data } = await supabase.from('portfolios')
         .select('user_id, roi_pct, total_value, profiles!inner(display_name, username)')
         .eq('league_id', id).order('roi_pct', { ascending: false })
-      return (data ?? []).map((r: RankRow, i: number) => {
+      const rows = (data ?? []) as unknown as RankRow[]
+      return rows.map((r: RankRow, i: number) => {
         const p = Array.isArray(r.profiles) ? r.profiles[0] : r.profiles
         return { rank: i + 1, user_id: r.user_id, name: p?.display_name ?? '', username: p?.username ?? '', roi: r.roi_pct, total: r.total_value }
       })
